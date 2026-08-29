@@ -226,10 +226,19 @@
         estado.style.color = "#1877F2";
         estado.innerText = "Enviando reporte...";
 
+        // Procesamiento del teléfono para ocultar la URL larga y dejar un enlace limpio
+        let telInput = document.getElementById('telefono').value.replace(/\D/g, '');
+        if (telInput.startsWith('0')) {
+            telInput = telInput.substring(1);
+        }
+        if (!telInput.startsWith('58')) {
+            telInput = '58' + telInput;
+        }
+
         const ahora = new Date();
         const datos = {
             Cliente: document.getElementById('cliente').value,
-            Teléfono: document.getElementById('telefono').value,
+            Teléfono: `[+${telInput} (Abrir WhatsApp)](https://wa.me/${telInput})`,
             Método: document.getElementById('metodo').value,
             Monto: document.getElementById('monto').value,
             Referencia: document.getElementById('referencia').value,
