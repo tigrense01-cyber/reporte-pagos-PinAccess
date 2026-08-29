@@ -15,12 +15,12 @@ export default async function handler(req, res) {
 
     if (TELEGRAM_TOKEN && TELEGRAM_CHAT_ID) {
       const mensaje = `🏦 *NUEVO REPORTE DE PAGO*\n\n` +
-                      `👤 *Cliente:* ${Cliente}\n` +
-                      `📞 *Teléfono:* ${Teléfono}\n` +
-                      `💳 *Método:* ${Método}\n` +
-                      `💵 *Monto:* ${Monto}\n` +
-                      `🔢 *Referencia:* ${Referencia}\n` +
-                      `📅 *Fecha:* ${Fecha} ${Hora}`;
+                    `👤 *Cliente:* ${Cliente}\n` +
+                    `📞 *Teléfono:* ${Teléfono}\n` +
+                    `💳 *Método:* ${Método}\n` +
+                    `💵 *Monto:* ${Monto}\n` +
+                    `🔢 *Referencia:* ${Referencia}\n` +
+                    `📅 *Fecha:* ${Fecha} ${Hora}`;
 
       await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -28,7 +28,8 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: mensaje,
-          parse_mode: 'Markdown'
+          parse_mode: 'Markdown',
+          disable_web_page_preview: true
         })
       });
     }
