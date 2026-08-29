@@ -29,7 +29,6 @@ export default async function handler(req, res) {
           chat_id: TELEGRAM_CHAT_ID,
           text: mensaje,
           parse_mode: 'Markdown'
-          disable_web_page_preview: true
         })
       });
     }
