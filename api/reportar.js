@@ -4,9 +4,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { Cliente, Teléfono, Método, Monto, Referencia, Fecha, Hora } = req.body;
+    const { Cliente, Teléfono, Concepto, Método, Monto, Referencia, Fecha, Hora } = req.body;
 
-    if (!Cliente || !Monto || !Referencia) {
+    if (!Cliente || !Concepto || !Monto || !Referencia) {
       return res.status(400).json({ error: 'Faltan datos obligatorios' });
     }
 
@@ -17,6 +17,7 @@ export default async function handler(req, res) {
       const mensaje = `🏦 *NUEVO REPORTE DE PAGO*\n\n` +
                     `👤 *Cliente:* ${Cliente}\n` +
                     `📞 *Teléfono:* ${Teléfono}\n` +
+                    `📝 *Concepto:* ${Concepto}\n` +
                     `💳 *Método:* ${Método}\n` +
                     `💵 *Monto:* ${Monto}\n` +
                     `🔢 *Referencia:* ${Referencia}\n` +
