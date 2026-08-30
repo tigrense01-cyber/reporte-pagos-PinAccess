@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Actualización de Datos - Pin_Access</title>
+    <style>
+        :root {
+            --color-main: #1877F2;
+            --color-success: #22c55e;
+            --color-error: #dc3545;
+            --text-dark: #1f2937;
+            --shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 22px;
+            width: 92%;
+            max-width: 380px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        h2 { text-align: center; color: var(--text-dark); font-size: 1.4rem; margin-bottom: 4px; }
+        .subtitle { text-align: center; font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; }
+
+        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-left: 5px; display: block; }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus { border-color: var(--color-main); }
+        textarea { resize: none; height: 70px; }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-main);
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+            margin-top: 5px;
+        }
+
+        #estado { text-align: center; font-size: 13px; margin-top: 15px; font-weight: bold; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Actualizar Datos</h2>
+    <div class="subtitle">Formulario de Cliente</div>
+
+    <form id="updateForm" autocomplete="off">
+        <label for="cliente">Nombre y Apellido</label>
+        <input type="text" id="cliente" name="cliente" placeholder="Ej: Juan Pérez" required>
+
+        <label for="cedula">Cédula</label>
+        <input type="text" id="cedula" name="cedula" placeholder="Ej: V-12345678" inputmode="numeric" required>
+
+        <label for="telefono">Teléfono Whatsapp</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 04121234567" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Ej: correo@example.com" required>
+
+        <label for="direccion">Dirección</label>
+        <textarea id="direccion" name="direccion" placeholder="Calle, número de casa/edificio..." required></textarea>
+
+        <label for="referencia">Punto de Referencia</label>
+        <input type="text" id="referencia" name="referencia" placeholder="Ej: Cerca de la panadería...">
+
+        <label for="sector">Sector o Urbanización</label>
+        <input type="text" id="sector" name="sector" placeholder="Ej: Las Delicias" required>
+        
+        <button type="submit" id="btnSubmit">ENVIAR ACTUALIZACIÓN</button>
+    </form>
+    
+    <p id="estado"></p>
+</div>
+
+<script>
+    document.getElementById('updateForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const estado = document.getElementById('estado');
+        const btnSubmit = document.getElementById('btnSubmit');
+        
+        btnSubmit.disabled = true;
+        estado.style.color = "#1877F2";
+        estado.innerText = "Enviando datos...";
+
+        let telInput = document.getElementById('telefono').value.replace(/\D/g, '');
+        if (telInput.startsWith('0')) {
+            telInput = telInput.substring(1);
+        }
+        if (!telInput.startsWith('58')) {
+            telInput = '58' + telInput;
+        }
+
+        const ahora = new Date();
+        const datos = {
+            Cliente: document.getElementById('cliente').value,
+            Cedula: document.getElementById('cedula').value,
+            Teléfono: `[+${telInput}](https://wa.me/${telInput})`,
+            Email: document.getElementById('email').value,
+            Direccion: document.getElementById('direccion').value,
+            Referencia: document.getElementById('referencia').value,
+            Sector: document.getElementById('sector').value,
+            Fecha: ahora.toLocaleDateString('es-VE'),
+            Hora: ahora.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', hour12: true })
+        };
+
+        try {
+            const response = await fetch('/api/actualizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            if (response.ok) {
+                estado.style.color = "#22c55e";
+                estado.innerText = "✅ Datos actualizados con éxito.";
+                document.getElementById('updateForm').reset();
+            } else {
+                throw new Error("Error en el servidor");
+            }
+        } catch (err) {
+            estado.style.color = "#dc3545";
+            estado.innerText = "❌ Error al enviar. Intente de nuevo.";
+        } finally {
+            btnSubmit.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
