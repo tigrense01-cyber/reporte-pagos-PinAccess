@@ -130,7 +130,7 @@
                 <div class="label-cashea">Cédula</div>
                 <div class="value-cashea">V-14.560.040</div>
             </div>
-            <button class="btn-copy-mini" type="button" onclick="copySingle('14560040', this)">COPIAR</button>
+            <button class="btn-copy-mini" type="button" onclick="copySingle('V14560040', this)">COPIAR</button>
         </div>
 
         <div class="cashea-row">
@@ -153,7 +153,6 @@
         <label for="telefono">Teléfono de Contacto</label>
         <input type="tel" id="telefono" name="telefono" placeholder="Ej: 04121234567" required>
         
-        <!-- NUEVO CAMPO DE CONCEPTO -->
         <label for="concepto">Concepto del Pago</label>
         <input type="text" id="concepto" name="concepto" placeholder="Ej: Mensualidad / Activación" required>
 
@@ -203,7 +202,8 @@
     }
 
     function copyAllMobile(btn) {
-        const textToCopy = "0104 04248808670 14560040";
+        // CORREGIDO: Se agregó la 'V' a la cédula para que el portapapeles sea compatible con los bancos
+        const textToCopy = "0104 04248808670 V14560040";
         if (navigator.clipboard) {
             navigator.clipboard.writeText(textToCopy).then(() => setCopyState(btn, "¡TODO COPIADO!"));
         }
@@ -242,7 +242,7 @@
         const datos = {
             Cliente: document.getElementById('cliente').value,
             Teléfono: `[+${telInput}](https://wa.me/${telInput})`,
-            Concepto: document.getElementById('concepto').value, // NUEVO CAMPO AÑADIDO
+            Concepto: document.getElementById('concepto').value,
             Método: document.getElementById('metodo').value,
             Monto: document.getElementById('monto').value,
             Referencia: document.getElementById('referencia').value,
